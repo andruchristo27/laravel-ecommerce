@@ -17,7 +17,7 @@
             <tr>
                 <td>{{ $order->id }}</td>
                 <td>{{ $order->user->name }}</td>
-                <td>{{ $order->total_price }}</td>
+                <td>Rp {{ $order->total_price }}</td>
                 <td>{{ $order->status }}</td>
                 <td>
                     <a href="{{ route('orders.show', $order->id) }}" class="btn btn-info">View</a>

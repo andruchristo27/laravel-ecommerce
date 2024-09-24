@@ -13,43 +13,43 @@
             <nav class="col-md-2 d-flex flex-column flex-shrink-0 p-3 bg-light ">
                 <div class="sidebar-sticky">
                     <a href="/dashboard" class="d-flex align-items-center mb-3 mb-md-2 me-md-auto text-black text-decoration-none">
-                    <img src="{{ Storage::url('logo.svg') }}" alt="Dashboard" style="width: 25px; height: 25px; margin-right: 10px;">
+                    <img src="{{ asset('assets/logo.svg') }}" alt="Dashboard" style="width: 25px; height: 25px; margin-right: 10px;">
                     <span class="fs-4">Admin Panel</span>
                     </a>
                     <ul class="nav nav-pills flex-column mb-auto">
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('admin.dashboard*') ? 'active' : '' }}" aria-current="page" href="{{ route('admin.dashboard') }}">
-                            <img src="{{ Storage::url('dashboard.svg') }}" alt="Dashboard" style="width: 20px; height: 20px; margin-right: 5px;">
+                            <img src="{{ asset('assets/dashboard.svg') }}" alt="Dashboard" style="width: 20px; height: 20px; margin-right: 5px;">
                                 Dashboard
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('categories*') ? 'active' : '' }}" href="{{ route('categories.index') }}">
-                            <img src="{{ Storage::url('category.svg') }}" alt="Dashboard" style="width: 20px; height: 20px; margin-right: 5px;">
+                            <img src="{{ asset('assets/category.svg') }}" alt="Dashboard" style="width: 20px; height: 20px; margin-right: 5px;">
                                 Categories
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('products*') ? 'active' : '' }}" href="{{ route('products.index') }}">
-                            <img src="{{ Storage::url('box.svg') }}" alt="Dashboard" style="width: 20px; height: 20px; margin-right: 5px;">
+                            <img src="{{ asset('assets/product.svg') }}" alt="Dashboard" style="width: 20px; height: 20px; margin-right: 5px;">
                                 Products
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('users*') ? 'active' : '' }}" href="{{ route('users.index') }}">
-                            <img src="{{ Storage::url('user.svg') }}" alt="Dashboard" style="width: 20px; height: 20px; margin-right: 5px;">
+                            <img src="{{ asset('assets/user.svg') }}" alt="Dashboard" style="width: 20px; height: 20px; margin-right: 5px;">
                                 Users
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('order*') ? 'active' : '' }}" href="{{ route('orders.index') }}">
-                            <img src="{{ Storage::url('order.svg') }}" alt="Dashboard" style="width: 20px; height: 20px; margin-right: 5px;">
+                            <img src="{{ asset('assets/order.svg') }}" alt="Dashboard" style="width: 20px; height: 20px; margin-right: 5px;">
                                 Orders
                             </a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link d-flex align-items-center text-black {{ request()->routeIs('logout*') ? 'active' : '' }}" href="#" onclick="event.preventDefault(); if(confirm('Apakah anda yakin ingin logout?')) { document.getElementById('logout-form').submit(); }">
-                            <img src="{{ Storage::url('logout.svg') }}" alt="Dashboard" style="width: 20px; height: 20px; margin-right: 5px;">
+                            <img src="{{ asset('assets/logout.svg') }}" alt="Dashboard" style="width: 20px; height: 20px; margin-right: 5px;">
                                 Logout
                             </a>
                         </li>
