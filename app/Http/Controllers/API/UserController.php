@@ -64,7 +64,7 @@ class UserController extends Controller
 
         return response()->json([
             'status' => 'error',
-            'message' => 'auth.unauthorized',
+            'message' => 'check your email or password',
             'data' => null,
         ], 401);
     }
@@ -83,7 +83,7 @@ class UserController extends Controller
     {
         return response()->json([
             'status' => 'success',
-            'message' => 'user_found',
+            'message' => 'user found',
             'data' => Auth::user(),
         ]);
     }
