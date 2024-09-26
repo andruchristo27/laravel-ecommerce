@@ -18,6 +18,19 @@
         </div>
     @endif
 
+    <div class="mt-2 d-flex flex-wrap">
+        @foreach ($product->images as $image)
+            <div class="image-container mb-2 mr-2">
+                <img src="{{ Storage::url($image->image_url) }}" alt="Product Image" style="width: 100px; height: auto;">
+                <form action="{{ route('products.images.destroy', [$product, $image]) }}" method="POST" style="display:inline;">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                </form>
+            </div>
+        @endforeach
+    </div>
+
     <form action="{{ route('products.update', $product) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
@@ -58,18 +71,6 @@
             <label for="images">Product Images</label>
             <input type="file" name="images[]" class="form-control" multiple>
             <small class="form-text text-muted">You can add more images. Current images:</small>
-            <div class="mt-2">
-                @foreach ($product->images as $image)
-                    <div class="mb-2">
-                        <img src="{{ Storage::url($image->image_url) }}" alt="Product Image" style="width: 100px; height: auto;">
-                        <form action="{{ route('products.images.destroy', [$product, $image]) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger btn-sm">Delete</button>
-                        </form>
-                    </div>
-                @endforeach
-            </div>
         </div>
         
         <button type="submit" class="btn btn-primary">Update Product</button>

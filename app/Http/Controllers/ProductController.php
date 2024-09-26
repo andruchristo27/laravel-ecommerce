@@ -66,6 +66,7 @@ class ProductController extends Controller
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
+        
         $product->update($request->only(['category_id', 'name', 'description', 'price', 'stock']));
 
         if ($request->hasFile('images')) {
