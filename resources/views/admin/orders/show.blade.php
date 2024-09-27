@@ -9,7 +9,7 @@
     <p><strong>Created At:</strong> {{ $order->created_at }}</p>
 
     <h4>Order Items</h4>
-    <table class="table table-striped">
+    <table id="table" class="table table-striped" style="width:100%">
         <thead>
             <tr>
                 <th>Product</th>

@@ -26,7 +26,7 @@
         </div>
     @endif
 
-    <table class="table table-striped">
+    <table id="table" class="table table-striped" style="width:100%">
         <thead>
             <tr>
                 <th>ID</th>

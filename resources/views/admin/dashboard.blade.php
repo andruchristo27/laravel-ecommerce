@@ -30,7 +30,7 @@
     </div>
 
     <h4>Recent Orders</h4>
-    <table class="table table-striped">
+    <table id="table" class="table table-striped" style="width:100%">
         <thead>
             <tr>
                 <th>#</th>

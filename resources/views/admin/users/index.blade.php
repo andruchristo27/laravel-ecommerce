@@ -2,7 +2,7 @@
 
 @section('content')
     <h2 class="mt-3">List User</h2>
-    <table class="table table-striped">
+    <table id="table" class="table table-striped" style="width:100%">
         <thead>
             <tr>
                 <th>ID</th>

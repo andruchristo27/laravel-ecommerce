@@ -7,7 +7,7 @@
     <p><strong>Role:</strong> {{ $user->role }}</p>
     
     <h4>Order History</h4>
-    <table class="table table-striped">
+    <table id="table" class="table table-striped" style="width:100%">
         <thead>
             <tr>
                 <th>Order ID</th>
