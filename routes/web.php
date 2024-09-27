@@ -10,11 +10,11 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\OrderController;
 use App\Http\Middleware\AdminMiddleware;
 
-Route::get('/', function () {
-    return redirect('/login');
-});
 
 Route::middleware('guest')->group(function () {
+    Route::get('/', function () {
+        return redirect('/login');
+    });
     Route::get('/register', [AuthenticationController::class, 'registerForm'])->name('registerForm');
     Route::post('/register', [AuthenticationController::class, 'register'])->name('register');
     Route::get('/login', [AuthenticationController::class, 'loginForm'])->name('login');

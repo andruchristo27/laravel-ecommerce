@@ -59,10 +59,16 @@ class AuthenticationController extends Controller
         ]);
 
         if (Auth::attempt($request->only('email', 'password'))) {
-            return redirect('/dashboard')->with('success', 'Login successful.');
-        }
+            $user = Auth::user();
 
-        return back()->with('error', 'Invalid credential');
+            if ($user->role === 'admin') {
+                return redirect('/dashboard')->with('success', 'Login as admin successful.');
+            }
+
+            Auth::logout();
+            return redirect('/login')->with('error', 'Access denied. Only admins are allowed.');
+        }
+        return back()->with('error', 'Invalid credentials.');
     }
 
     public function logout(Request $request)
