@@ -11,13 +11,15 @@ use App\Http\Controllers\OrderController;
 use App\Http\Middleware\AdminMiddleware;
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect('/login');
 });
 
-Route::get('/register', [AuthenticationController::class, 'registerForm'])->name('registerForm');
-Route::post('/register', [AuthenticationController::class, 'register'])->name('register');
-Route::get('/login', [AuthenticationController::class, 'loginForm'])->name('login');
-Route::post('/login', [AuthenticationController::class, 'login']);
+Route::middleware('guest')->group(function () {
+    Route::get('/register', [AuthenticationController::class, 'registerForm'])->name('registerForm');
+    Route::post('/register', [AuthenticationController::class, 'register'])->name('register');
+    Route::get('/login', [AuthenticationController::class, 'loginForm'])->name('login');
+    Route::post('/login', [AuthenticationController::class, 'login']);
+});
 
 Route::middleware([AdminMiddleware::class])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');

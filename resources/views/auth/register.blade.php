@@ -50,13 +50,6 @@
             <label for="phone_number">phone Number</label>
             <input type="number" name="phone_number" class="form-control" required>
         </div>
-        <div class="form-group">
-            <label for="role">Role</label>
-            <select name="role" class="form-control" required>
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-            </select>
-        </div>
         <button type="submit" class="btn btn-primary">Register</button>
     </form>
 </div>

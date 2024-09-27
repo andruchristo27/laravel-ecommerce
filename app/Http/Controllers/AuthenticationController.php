@@ -24,7 +24,6 @@ class AuthenticationController extends Controller
             'password' => 'required|string|min:6|confirmed',
             'address' => 'required|string|max:255',
             'phone_number' => 'required|digits_between:10,13',
-            'role' => 'required|string|in:admin,user',
         ]);
 
         if ($validator->fails()) {
@@ -38,7 +37,7 @@ class AuthenticationController extends Controller
                 'password' => Hash::make($request->password),
                 'address' => $request->address,
                 'phone_number' => $request->phone_number,
-                'role' => $request->role,
+                'role' => "admin",
             ]);
 
             return redirect('/login')->with('success', 'Registration successful. Please log in.');
@@ -73,7 +72,6 @@ class AuthenticationController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return to_route('login')
-            ->withSuccess('You have logged out successfully!');;
+        return to_route('login')->with('success', 'You have logged out successfully!');
     }
 }
