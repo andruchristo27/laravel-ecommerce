@@ -10,7 +10,7 @@
         </div>
     @endif
 
-    <table id="table" class="table table-striped" style="width:100%">
+    <table id="productTable" class="table table-striped" style="width:100%">
         <thead>
             <tr>
                 <th>ID</th>
@@ -23,28 +23,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($products as $product)
-                <tr>
-                    <td>{{ $product->id }}</td>
-                    <td>{{ $product->name }}</td>
-                    <td>{{ $product->description }}</td>
-                    <td>Rp {{ $product->price }}</td>
-                    <td>{{ $product->stock }}</td>
-                    <td>
-                        @foreach ($product->images as $image)
-                            <img src="{{ Storage::url($image->image_url) }}" alt="Product Image" style="width: 50px; height: auto;">
-                        @endforeach
-                    </td>
-                    <td>
-                        <a href="{{ route('products.edit', $product) }}" class="btn btn-warning">Edit</a>
-                        <form action="{{ route('products.destroy', $product) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
+            
         </tbody>
     </table>
 @endsection

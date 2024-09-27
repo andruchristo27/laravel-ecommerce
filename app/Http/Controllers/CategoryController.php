@@ -5,13 +5,32 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\DataTables;
 
 class CategoryController extends Controller
 {
     public function index()
     {
-        $categories = Category::all();
-        return view('admin.categories.index', compact('categories'));
+        return view('admin.categories.index');
+    }
+
+    public function show(Request $request)
+    {
+        $query = Category::query();
+        
+        return DataTables::of($query)
+            ->addColumn('actions', function ($category) {
+                return '
+                    <a href="'.route('categories.edit', $category).'" class="btn btn-warning">Edit</a>
+                    <form action="'.route('categories.destroy', $category).'" method="POST" style="display:inline;">
+                        '.csrf_field().'
+                        '.method_field('DELETE').'
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                ';
+            })
+            ->rawColumns(['actions'])
+            ->make(true);
     }
 
     public function create()

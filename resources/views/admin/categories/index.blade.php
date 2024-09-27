@@ -26,7 +26,7 @@
         </div>
     @endif
 
-    <table id="table" class="table table-striped" style="width:100%">
+    <table id="categoriesTable" class="table table-striped" style="width:100%">
         <thead>
             <tr>
                 <th>ID</th>
@@ -36,21 +36,7 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($categories as $category)
-                <tr>
-                    <td>{{ $category->id }}</td>
-                    <td>{{ $category->name }}</td>
-                    <td>{{ $category->description }}</td>
-                    <td>
-                        <a href="{{ route('categories.edit', $category) }}" class="btn btn-warning">Edit</a>
-                        <form action="{{ route('categories.destroy', $category) }}" method="POST" style="display:inline;">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-danger">Delete</button>
-                        </form>
-                    </td>
-                </tr>
-            @endforeach
+            
         </tbody>
     </table>
 @endsection

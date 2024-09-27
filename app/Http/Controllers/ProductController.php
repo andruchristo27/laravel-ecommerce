@@ -7,6 +7,8 @@ use App\Models\ProductImage;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Yajra\DataTables\DataTables;
+use Illuminate\Support\Facades\Storage;
 
 class ProductController extends Controller
 {
@@ -14,6 +16,32 @@ class ProductController extends Controller
     {
         $products = Product::with('images')->get();
         return view('admin.products.index', compact('products'));
+    }
+
+    public function show(Request $request)
+    {
+        $query = Product::with('images');
+
+        return DataTables::of($query)
+            ->addColumn('images', function ($product) {
+                $images = '';
+                foreach ($product->images as $image) {
+                    $images .= '<img src="'.Storage::url($image->image_url).'" alt="Product Image" style="width: 50px; height: auto;">';
+                }
+                return $images;
+            })
+            ->addColumn('actions', function ($product) {
+                return '
+                    <a href="'.route('products.edit', $product).'" class="btn btn-warning">Edit</a>
+                    <form action="'.route('products.destroy', $product).'" method="POST" style="display:inline;">
+                        '.csrf_field().'
+                        '.method_field('DELETE').'
+                        <button type="submit" class="btn btn-danger">Delete</button>
+                    </form>
+                ';
+            })
+            ->rawColumns(['images', 'actions'])
+            ->make(true);
     }
 
     public function create()

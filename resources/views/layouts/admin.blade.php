@@ -73,13 +73,52 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/2.1.7/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.1.7/js/dataTables.bootstrap5.js"></script>
-
+    
     <script>
         new DataTable('#table', {
             columnDefs: [{
                 "defaultContent": "-",
                 "targets": "_all"
             }]
+        });
+
+        //Categori
+        $(document).ready(function() {
+            $('#categoriesTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: '{{ route('categories.data') }}',
+                    type: 'GET',
+                },
+                columns: [
+                    { data: 'id', name: 'id' },
+                    { data: 'name', name: 'name' },
+                    { data: 'description', name: 'description' },
+                    { data: 'actions', name: 'actions', orderable: false, searchable: false },
+                ]
+            });
+        });
+
+        //Product
+        $(document).ready(function() {
+            $('#productTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: '{{ route('products.data') }}',
+                    type: 'GET'
+                },
+                columns: [
+                    { data: 'id', name: 'id' },
+                    { data: 'name', name: 'name' },
+                    { data: 'description', name: 'description' },
+                    { data: 'price', name: 'price' },
+                    { data: 'stock', name: 'stock' },
+                    { data: 'images', name: 'images', orderable: false, searchable: false },
+                    { data: 'actions', name: 'actions', orderable: false, searchable: false }
+                ]
+            });
         });
     </script>
 </body>

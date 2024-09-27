@@ -24,7 +24,9 @@ Route::middleware('guest')->group(function () {
 Route::middleware([AdminMiddleware::class])->group(function () {
     Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
     Route::resource('categories', CategoryController::class);
+    Route::get('categories/data', [CategoryController::class, 'show'])->name('categories.data');
     Route::resource('products', ProductController::class);
+    Route::get('products/data', [ProductController::class, 'show'])->name('products.data');
     Route::delete('products/{product}/images/{image}', [ProductImageController::class, 'destroy'])->name('products.images.destroy');
     Route::get('users', [UserController::class, 'index'])->name('users.index');
     Route::get('users/{id}', [UserController::class, 'show'])->name('users.show');
