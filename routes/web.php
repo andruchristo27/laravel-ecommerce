@@ -33,4 +33,5 @@ Route::middleware([AdminMiddleware::class])->group(function () {
     Route::get('orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('orders/{id}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
+    Route::get('/SearchCategories', [ProductController::class, 'search'])->name('search.category');
 });

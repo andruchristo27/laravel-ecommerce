@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/2.1.7/css/dataTables.bootstrap5.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"/>
 </head>
 <body>
     <div class="container-fluid">
@@ -73,6 +74,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.datatables.net/2.1.7/js/dataTables.js"></script>
     <script src="https://cdn.datatables.net/2.1.7/js/dataTables.bootstrap5.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
     
     <script>
         new DataTable('#table', {
@@ -118,6 +120,35 @@
                     { data: 'images', name: 'images', orderable: false, searchable: false },
                     { data: 'actions', name: 'actions', orderable: false, searchable: false }
                 ]
+            });
+        });
+
+        //select category
+        $(document).ready(function() {
+            $('.select2').select2({
+                placeholder: "Select a category",
+                allowClear: true,
+                ajax: {
+                    url: '{{ route('search.category') }}',
+                    dataType: 'json',
+                    delay: 250,
+                    data: function (params) {
+                        return {
+                            q: params.term // istilah pencarian
+                        };
+                    },
+                    processResults: function (data) {
+                        return {
+                            results: $.map(data, function (item) {
+                                return {
+                                    text: item.name, // Nama kategori yang akan ditampilkan
+                                    id: item.id      // ID kategori yang akan dipilih
+                                };
+                            })
+                        };
+                    },
+                    cache: true
+                }
             });
         });
     </script>

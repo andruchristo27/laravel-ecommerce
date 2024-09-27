@@ -114,4 +114,14 @@ class ProductController extends Controller
         $product->delete();
         return redirect()->route('products.index')->with('success', 'Product deleted successfully.');
     }
+
+    public function search(Request $request) {
+        $search = $request->get('q');
+    
+        $categories = Category::where('name', 'like', "%$search%")
+                              ->limit(20)
+                              ->get();
+    
+        return response()->json($categories);
+    }
 }
