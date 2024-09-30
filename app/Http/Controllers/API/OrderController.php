@@ -229,19 +229,17 @@ class OrderController extends Controller
         }
 
         if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
-            $order->update(['status' => 'completed']);
+            $order->update([
+                'status' => 'completed',
+                'transaction_id' => $request->transaction_id,
+                'payment_type' => $request->payment_type,
+                'va_number' => $request->va_number ?? null,
+                'bank' => $request->bank ?? null,
+                'acquirer' => $request->acquirer ?? null,
+                'reference_no' => $request->payment_reference_no ?? null,]);
         } elseif ($request->transaction_status == 'cancel' || $request->transaction_status == 'deny' || $request->transaction_status == 'expire') {
             $order->update(['status' => 'cancelled']);
         }
-
-        $order->update([
-            'transaction_id' => $request->transaction_id,
-            'payment_type' => $request->payment_type,
-            'va_number' => $request->va_number ?? null,
-            'bank' => $request->bank ?? null,
-            'acquirer' => $request->acquirer ?? null,
-            'reference_no' => $request->payment_reference_no ?? null,
-        ]);
 
         return response()->json(['status' => 'success', 'message' => 'Order status updated']);
     }
