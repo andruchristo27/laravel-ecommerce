@@ -238,8 +238,8 @@ class OrderController extends Controller
         $order->update([
             'transaction_id' => $request->transaction_id,
             'payment_type' => $request->payment_type,
-            'va_number' => $request->va_numbers->va_number ?? null,
-            'bank' => $request->va_numbers->bank ?? null,
+            'va_number' => isset($request->va_numbers[0]['va_number']) ? $request->va_numbers[0]['va_number'] : null,
+            'bank' => isset($request->va_numbers[0]['bank']) ? $request->va_numbers[0]['bank'] : null,
             'acquirer' => $request->acquirer ?? null,
             'reference_no' => $request->payment_reference_no ?? null,
         ]);
