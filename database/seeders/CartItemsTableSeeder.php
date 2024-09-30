@@ -11,14 +11,14 @@ class CartItemsTableSeeder extends Seeder
     {
         DB::table('cart_items')->insert([
             [
-                'cart_id' => 1,
+                'user_id' => 2,
                 'product_id' => 1,
                 'quantity' => 1,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'cart_id' => 1,
+                'user_id' => 2,
                 'product_id' => 2,
                 'quantity' => 2,
                 'created_at' => now(),

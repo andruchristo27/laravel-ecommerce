@@ -11,6 +11,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
+use Midtrans\Snap;
 
 class OrderController extends Controller
 {
@@ -39,7 +40,8 @@ class OrderController extends Controller
     public function checkoutFromCart(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'cart_id' => 'required|exists:carts,id',
+            'cart_id' => 'required|array',
+            'cart_id.*' => 'exists:cart_items,id',
         ]);
 
         if ($validator->fails()) {
@@ -50,12 +52,12 @@ class OrderController extends Controller
             ], 422);
         }
 
-        $cart = Cart::where('id', $request->cart_id)
-                    ->where('user_id', Auth::id())
-                    ->with('items.product')
-                    ->first();
+        $cartItems = CartItem::whereIn('id', $request->cart_id)
+                            ->where('user_id', Auth::id())
+                            ->with('product')
+                            ->get();
 
-        if (!$cart || $cart->items->isEmpty()) {
+        if ($cartItems->isEmpty()) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'No items found in the cart',
@@ -64,17 +66,17 @@ class OrderController extends Controller
         }
 
         $totalPrice = 0;
-        foreach ($cart->items as $cartItem) {
+        foreach ($cartItems as $cartItem) {
             $totalPrice += $cartItem->product->price * $cartItem->quantity;
         }
 
         $order = Order::create([
             'user_id' => Auth::id(),
             'total_price' => $totalPrice,
-            'status' => 'completed',
+            'status' => 'pending',
         ]);
 
-        foreach ($cart->items as $cartItem) {
+        foreach ($cartItems as $cartItem) {
             OrderItem::create([
                 'order_id' => $order->id,
                 'product_id' => $cartItem->product_id,
@@ -83,15 +85,51 @@ class OrderController extends Controller
             ]);
 
             $cartItem->product->decrement('stock', $cartItem->quantity);
+            // $cartItem->delete();
         }
 
-        $cart->delete();
+        $item_details = [];
+        foreach ($cartItems as $cartItem) {
+            $item_details[] = [
+                'id' => 'p' . $cartItem->product_id,
+                'price' => (int)$cartItem->product->price,
+                'quantity' => (int)$cartItem->quantity,
+                'name' => $cartItem->product->name,
+            ];
+        }
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Order placed successfully from cart',
-            'data' => $order,
-        ], 201);
+        $params = array(
+            'transaction_details' => array(
+                'order_id' => $order->id,
+                'gross_amount' => $totalPrice,
+            ),
+            'customer_details' => array(
+                'first_name' => Auth::user()->name,
+                'email' => Auth::user()->email,
+                'phone' => Auth::user()->phone_number,
+                'address' => Auth::user()->address,
+            ),
+            'item_details' => $item_details,
+        );
+
+        try {
+            $snapToken = Snap::getSnapToken($params);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Order placed successfully. Please proceed to payment.',
+                'data' => [
+                    'order' => $order,
+                    'snap_token' => $snapToken,
+                    'redirect_url' => 'https://app.sandbox.midtrans.com/snap/v2/vtweb/' .$snapToken,
+                ],
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to create payment.',
+                'data' => null,
+            ], 500);
+        }
     }
 
     public function checkoutFromProduct(Request $request)
@@ -141,5 +179,29 @@ class OrderController extends Controller
             'message' => 'Order placed successfully from product',
             'data' => $order,
         ], 201);
+    }
+
+    public function handleCallback(Request $request)
+    {
+        $serverKey = config('services.midtrans.server_key');
+        $hashed = hash("sha512", $request->order_id . $request->status_code . $request->gross_amount . $serverKey);
+        
+        if ($hashed != $request->signature_key) {
+            return response()->json(['status' => 'error', 'message' => 'Invalid signature'], 403);
+        }
+
+        $order = Order::find($request->order_id);
+
+        if (!$order) {
+            return response()->json(['status' => 'error', 'message' => 'Order not found'], 404);
+        }
+
+        if ($request->transaction_status == 'capture' || $request->transaction_status == 'settlement') {
+            $order->update(['status' => 'completed']);
+        } elseif ($request->transaction_status == 'cancel' || $request->transaction_status == 'deny' || $request->transaction_status == 'expire') {
+            $order->update(['status' => 'cancelled']);
+        }
+
+        return response()->json(['status' => 'success', 'message' => 'Order status updated']);
     }
 }

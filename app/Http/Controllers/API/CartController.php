@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Models\Cart;
 use App\Models\CartItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -13,11 +12,9 @@ class CartController extends Controller
 {
     public function index()
     {
-        $cart = Cart::with('items.product')
-            ->where('user_id', Auth::id())
-            ->first();
+        $cart = CartItem::where('user_id', Auth::id())->get();
 
-        if (!$cart || $cart->items->isEmpty()) {
+        if (!$cart || $cart->isEmpty()) {
             return response()->json([
                 'status' => 'error',
                 'message' => 'cart empty',
@@ -28,8 +25,8 @@ class CartController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'cart items fetched',
-            'data' => $cart->items,
-            'total_items' => $cart->items->count(),
+            'data' => $cart,
+            'total_items' => $cart->count(),
         ], 200);
     }
 
@@ -48,10 +45,8 @@ class CartController extends Controller
             ], 422);
         }
 
-        $cart = Cart::firstOrCreate(['user_id' => Auth::id()]);
-
         $cartItem = CartItem::create([
-            'cart_id' => $cart->id,
+            'user_id' => Auth::id(),
             'product_id' => $request->product_id,
             'quantity' => $request->quantity,
         ]);
@@ -65,7 +60,7 @@ class CartController extends Controller
 
     public function delete($id)
     {
-        $cartItem = Cart::findOrFail($id);
+        $cartItem = CartItem::findOrFail($id);
 
         $cartItem->delete();
 
@@ -87,7 +82,7 @@ class CartController extends Controller
 
         if ($validator->fails()) {
             return response()->json([
-                'status' => __('general.error'),
+                'status' => 'error',
                 'message' => $validator->errors()->first(),
                 'data' => null,
             ], 422);
