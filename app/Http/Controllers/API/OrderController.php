@@ -237,7 +237,6 @@ class OrderController extends Controller
         $order->update([
             'transaction_id' => $request->transaction_id,
             'payment_type' => $request->payment_type,
-            'gross_amount' => $request->gross_amount,
             'va_number' => $request->va_number ?? null,
             'bank' => $request->bank ?? null,
             'acquirer' => $request->acquirer ?? null,
