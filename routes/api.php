@@ -22,10 +22,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/checkout/cart', [OrderController::class, 'checkoutFromCart']);
     Route::post('/checkout/product', [OrderController::class, 'checkoutFromProduct']);
     Route::get('/orders', [OrderController::class, 'index']);
-
-    Route::post('/midtrans/callback', [OrderController::class, 'handleCallback']);
 });
 
+Route::post('/midtrans/callback', [OrderController::class, 'handleCallback']);
 Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 Route::get('/products', [ProductController::class, 'index']);
