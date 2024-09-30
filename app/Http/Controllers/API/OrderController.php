@@ -85,7 +85,7 @@ class OrderController extends Controller
             ]);
 
             $cartItem->product->decrement('stock', $cartItem->quantity);
-            // $cartItem->delete();
+            $cartItem->delete();
         }
 
         $item_details = [];
