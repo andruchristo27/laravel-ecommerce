@@ -174,11 +174,43 @@ class OrderController extends Controller
 
         $product->decrement('stock', $request->quantity);
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Order placed successfully from product',
-            'data' => $order,
-        ], 201);
+        $params = array(
+            'transaction_details' => array(
+                'order_id' => $order->id,
+                'gross_amount' => $totalPrice,
+            ),
+            'customer_details' => array(
+                'first_name' => Auth::user()->name,
+                'email' => Auth::user()->email,
+                'phone' => Auth::user()->phone_number,
+                'address' => Auth::user()->address,
+            ),
+            'item_details' => array(
+                'id' => 'p' . $product->id,
+                'price' => (int)$product->price,
+                'quantity' => (int)$product->quantity,
+                'name' => $product->name,
+            ),
+        );
+
+        try {
+            $snapToken = Snap::getSnapToken($params);
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Order placed successfully. Please proceed to payment.',
+                'data' => [
+                    'order' => $order,
+                    'snap_token' => $snapToken,
+                    'redirect_url' => 'https://app.sandbox.midtrans.com/snap/v2/vtweb/' .$snapToken,
+                ],
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Failed to create payment.',
+                'data' => null,
+            ], 500);
+        }
     }
 
     public function handleCallback(Request $request)
@@ -201,6 +233,16 @@ class OrderController extends Controller
         } elseif ($request->transaction_status == 'cancel' || $request->transaction_status == 'deny' || $request->transaction_status == 'expire') {
             $order->update(['status' => 'cancelled']);
         }
+
+        $order->update([
+            'transaction_id' => $request->transaction_id,
+            'payment_type' => $request->payment_type,
+            'gross_amount' => $request->gross_amount,
+            'va_number' => $request->va_number ?? null,
+            'bank' => $request->bank ?? null,
+            'acquirer' => $request->acquirer ?? null,
+            'reference_no' => $request->payment_reference_no ?? null,
+        ]);
 
         return response()->json(['status' => 'success', 'message' => 'Order status updated']);
     }
