@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\OrderItem;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\OrderExport;
+
 
 class OrderController extends Controller
 {
@@ -18,5 +21,10 @@ class OrderController extends Controller
     {
         $order = Order::with('items.product')->findOrFail($id);
         return view('admin.orders.show', compact('order'));
+    }
+
+    public function export()
+    {
+        return Excel::download(new OrderExport, 'orders.xlsx');
     }
 }

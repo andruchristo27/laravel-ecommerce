@@ -9,6 +9,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\DataTables;
 use Illuminate\Support\Facades\Storage;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ProductExport;
+use App\Imports\ProductImport;
 
 class ProductController extends Controller
 {
@@ -26,7 +29,12 @@ class ProductController extends Controller
             ->addColumn('images', function ($product) {
                 $images = '';
                 foreach ($product->images as $image) {
-                    $images .= '<img src="'.Storage::url($image->image_url).'" alt="Product Image" style="width: 50px; height: auto;">';
+                    $imageUrl = $image->image_url;
+                    if (filter_var($imageUrl, FILTER_VALIDATE_URL)) {
+                        $images .= '<img src="'.$imageUrl.'" alt="Product Image" style="width: 50px; height: auto;">';
+                    } else {
+                        $images .= '<img src="'.Storage::url($imageUrl).'" alt="Product Image" style="width: 50px; height: auto;">';
+                    }
                 }
                 return $images;
             })
@@ -123,5 +131,21 @@ class ProductController extends Controller
                               ->get();
     
         return response()->json($categories);
+    }
+
+    public function export()
+    {
+        return Excel::download(new ProductExport, 'products.xlsx');
+    }
+
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => 'required|mimes:xlsx,xls'
+        ]);
+
+        Excel::import(new ProductImport, $request->file('file'));
+
+        return back()->with('success', 'Products imported successfully.');
     }
 }

@@ -2,6 +2,7 @@
 
 @section('content')
     <h2 class="mt-3">List Orders</h2>
+    <a href="{{ route('export.order') }}" class="btn btn-success mb-3">Export Orders</a>
     <table id="table" class="table table-striped" style="width:100%">
         <thead>
             <tr>

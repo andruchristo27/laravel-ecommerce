@@ -34,4 +34,12 @@ Route::middleware([AdminMiddleware::class])->group(function () {
     Route::get('orders/{id}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/logout', [AuthenticationController::class, 'logout'])->name('logout');
     Route::get('/SearchCategories', [ProductController::class, 'search'])->name('search.category');
+    Route::get('/export/category', [CategoryController::class, 'export'])->name('export.category');
+    Route::post('/import/category', [CategoryController::class, 'import'])->name('import.category');
+
+    Route::get('/export/product', [ProductController::class, 'export'])->name('export.product');
+    Route::post('/import/product', [ProductController::class, 'import'])->name('import.product');
+
+    Route::get('/export/order', [OrderController::class, 'export'])->name('export.order');
+    Route::get('/export/user', [UserController::class, 'export'])->name('export.user');
 });
