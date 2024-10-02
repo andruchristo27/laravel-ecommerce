@@ -4,6 +4,7 @@ namespace App\Imports;
 
 use App\Models\Product;
 use App\Models\ProductImage;
+use App\Models\Category;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use Maatwebsite\Excel\Concerns\PersistRelations;
@@ -12,12 +13,13 @@ class ProductImport implements ToModel, WithHeadingRow
 {
     public function model(array $row)
     {
+        $category = Category::find($row['category_id']);
         $product = Product::create([
             'name' => $row['name'],
             'description' => $row['description'],
             'price' => $row['price'],
             'stock' => $row['stock'],
-            'category_id' => $row['category_id'],
+            'category_id' => $category ? $category->id : null,
         ]);
 
         $images = array_map('trim', explode(',', $row['images']));
