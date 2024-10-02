@@ -17,6 +17,7 @@ class ProductImport implements ToModel, WithHeadingRow
             'description' => $row['description'],
             'price' => $row['price'],
             'stock' => $row['stock'],
+            'category_id' => $row['category_id'],
         ]);
 
         $images = array_map('trim', explode(',', $row['images']));
